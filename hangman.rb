@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'yaml'
+
 def make_sec_word # creates a word to guess
   file = File.open('5desk.txt', "r")
   lines = file.readlines
@@ -113,9 +115,6 @@ def hints(guess, sec_word, guess_word) # gives hints and hangman status
   guess_word
 end
 
-def save(tries, sec_word, guess_word)
-end
-
 def play
   tries = 7
   sec_word = make_sec_word
@@ -136,11 +135,13 @@ def play
 end
 
 def new_game_or_load_save
-  puts 'Press only enter for new game'
-  input = gets.chomp
+  puts 'Press only enter for new game, l to load a save file'
+  input = gets.chomp.downcase
   if input == ''
     puts 'New Game Of Hangman'
     play
+  elsif input == 'l'
+    puts 'haven\'t implemented load feature'
   end
   rerun
 end
@@ -155,4 +156,26 @@ def rerun
   end
 end
 
-new_game_or_load_save
+# new_game_or_load_save
+
+# serialized_obj=YAML::dump(s)
+# puts YAML::load(serialized_obj)
+
+def save_to_file(game_info)
+  File.open('blah.yaml', 'w') do |save_file|
+    save_file.puts YAML::dump(game_info)
+  end
+end
+
+def load_from_file
+  File.open('blah.yaml', 'r') do |save_file|
+    YAML::load(save_file)
+  end
+end
+
+game_info = [4, 'apple', '____e']
+
+save_to_file(game_info)
+p load_from_file
+
+puts 'make saves folder where all yamls are stored???'
