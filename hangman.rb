@@ -12,7 +12,11 @@ class Hangman
   end
 
   def to_s
-    "tries left: #{tries}, secret word: #{sec_word}, current guess: #{guess_word}, man status: #{display_hangman(tries)}"
+    %{
+    tries left: #{tries}
+    current guess: #{guess_word}
+    man status: #{display_hangman(tries)}
+      }
   end
 
   def make_sec_word # creates a word to guess
@@ -105,17 +109,14 @@ class Hangman
   def all_letters(str)
     # Use 'str[/[a-zA-Z]*/] == str' to let all_letters
     # yield true for the empty string
-    # allows 0 as it is for saving
-    str[/[a-zA-Z]+/] == str
+    # allows 0/1 as it is for saving & sace nd cont..
+    str[/[a-zA-Z01]+/] == str
   end
 
   def ask_guess # gets proper input from user
-    puts 'Enter ur guess press 0 to save'
+    puts 'Enter ur guess, press 0 to save & quit, 1 to save & continue'
     input = gets.chomp
-    if input == '0'
-      save_to_file(self)
-      puts "file saved! #{load_from_file}"
-    elsif input.length > 1 || !all_letters(input)
+    if input.length > 1 || !all_letters(input)
       puts 'Error Input!!!'
       ask_guess
     end
@@ -132,26 +133,37 @@ class Hangman
   end
 
   def play
-    # puts 'word is : ' + sec_word
     while tries > 0
       guess = ask_guess
-      self.tries -= 1 unless sec_word.include?(guess) || guess == '0'
+      if guess.upcase == '0'
+        save_to_file(self)
+        puts 'Saved !!'
+        break
+      elsif guess.upcase == '1'
+        save_to_file(self)
+        puts 'Saved and resuming'
+      end
+      self.tries -= 1 unless sec_word.include?(guess) || guess == '0' || guess == '1'
 
       puts display_hangman(tries)
       puts hints(guess, sec_word, guess_word)
 
       return puts 'YOU WIN!!!!' if guess_word == sec_word
     end
-    puts "YOU LOSE!!!! word was #{sec_word}"
-  end
-
-  def save_to_file(game_info)
-    File.open('blah.yaml', 'w') do |save_file|
-      save_file.puts YAML::dump(game_info)
+    if tries == 0
+      puts "YOU LOSE!!!! word was #{sec_word}"
+    else
+      puts 'QUITTING'
     end
   end
 
-  def load_from_file
+  def save_to_file(hangman_obj)
+    File.open('blah.yaml', 'w') do |save_file|
+      save_file.puts YAML::dump(hangman_obj)
+    end
+  end
+
+  def self.load_from_file # had to make this a class method cause u cant load instance by calling load on another instance
     File.open('blah.yaml', 'r') do |save_file|
       YAML::load(save_file)
     end
@@ -159,20 +171,22 @@ class Hangman
 end
 
 def new_game_or_load_save
-  game = Hangman.new
-  puts 'Press only enter for new game, l to load a save file'
+  puts "Press only 'enter' for New Game, l to load a save file"
   input = gets.chomp.downcase
   if input == ''
-    puts 'New Game Of Hangman'
-    game.play
+    puts 'New Game Of Hangman !'
+    Hangman.new.play
   elsif input == 'l'
-    puts 'haven\'t implemented load feature'
+    puts 'Save load succesfull!'
+    loaded_obj = Hangman.load_from_file
+    puts loaded_obj
+    loaded_obj.play
   end
   rerun
 end
 
 def rerun
-  puts "Would you like to rerun Press 'y' for yes or 'n' for no."
+  puts "Would you like to rerun Press 'y' for yes or 'any other key' for no."
   repeat_input = gets.chomp.downcase
   if repeat_input == 'y'
     new_game_or_load_save
@@ -183,4 +197,4 @@ end
 
 new_game_or_load_save
 
-puts 'make saves folder where all yamls are stored???'
+# puts 'make saves folder where all yamls are stored???'

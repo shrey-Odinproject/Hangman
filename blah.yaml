@@ -1,4 +1,4 @@
 --- !ruby/object:Hangman
-sec_word: coccus
-tries: 5
-guess_word: _____s
+sec_word: aural
+tries: 4
+guess_word: aura_
