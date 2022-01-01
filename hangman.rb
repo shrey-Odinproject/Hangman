@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'yaml'
+require 'fileutils'
 
 class Hangman
   attr_accessor :sec_word, :tries, :guess_word
@@ -114,7 +115,7 @@ class Hangman
   end
 
   def ask_guess # gets proper input from user
-    puts 'Enter ur guess, press 0 to save & quit, 1 to save & continue'
+    print "Enter ur guess, press 0 to save & quit, 1 to save & continue: "
     input = gets.chomp
     if input.length > 1 || !all_letters(input)
       puts 'Error Input!!!'
@@ -133,8 +134,16 @@ class Hangman
   end
 
   def play
+    already_guessed = []
     while tries > 0
       guess = ask_guess
+      if already_guessed.include?(guess)
+        puts 'U already guessed this letter'
+        next
+      else
+        already_guessed.push(guess)
+      end
+      puts "u have guessed -> #{already_guessed.join(' ')}"
       if guess.upcase == '0'
         save_to_file(self)
         puts 'Saved !!'

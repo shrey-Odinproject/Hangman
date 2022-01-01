@@ -1,4 +1,4 @@
 --- !ruby/object:Hangman
-sec_word: aural
-tries: 4
-guess_word: aura_
+sec_word: megaphone
+tries: 7
+guess_word: _________
