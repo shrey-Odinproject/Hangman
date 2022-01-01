@@ -167,26 +167,38 @@ class Hangman
   end
 
   def save_to_file(hangman_obj)
-    File.open('blah.yaml', 'w') do |save_file|
+    Dir.mkdir('saves') unless Dir.exist?('saves') # holds all yaml saves user makes
+    print 'enter name of save file: '
+    input = gets.chomp
+    File.open("saves/#{input}.yaml", 'w') do |save_file|
       save_file.puts YAML::dump(hangman_obj)
     end
   end
 
   def self.load_from_file # had to make this a class method cause u cant load instance by calling load on another instance
-    File.open('blah.yaml', 'r') do |save_file|
-      YAML::load(save_file)
+    puts Dir["saves/*"]
+    print 'Select which file to load: '
+    input = gets.chomp
+    if !File.exist?("saves/#{input}.yaml")
+      puts 'No save found!!'
+      puts '----------'
+      load_from_file
+    else
+      puts 'Save load succesfull!'
+      File.open("saves/#{input}.yaml", 'r') do |save_file|
+        YAML::load(save_file)
+      end
     end
   end
 end
 
 def new_game_or_load_save
-  puts "Press only 'enter' for New Game, l to load a save file"
+  print "Press only 'enter' for New Game, l to load a save file: "
   input = gets.chomp.downcase
   if input == ''
     puts 'New Game Of Hangman !'
     Hangman.new.play
   elsif input == 'l'
-    puts 'Save load succesfull!'
     loaded_obj = Hangman.load_from_file
     puts loaded_obj
     loaded_obj.play
