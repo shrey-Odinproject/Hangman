@@ -1,0 +1,16 @@
+--- !ruby/object:Hangman
+sec_word: Brandt
+tries: 1
+guess_word: Brand_
+already_guessed:
+- d
+- f
+- w
+- e
+- r
+- a
+- n
+- o
+- m
+- b
+- '1'

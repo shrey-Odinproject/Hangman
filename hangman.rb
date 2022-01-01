@@ -1,21 +1,22 @@
 # frozen_string_literal: true
 
 require 'yaml'
-require 'fileutils'
 
 class Hangman
-  attr_accessor :sec_word, :tries, :guess_word
+  attr_accessor :sec_word, :tries, :guess_word, :already_guessed
 
   def initialize
     @sec_word = make_sec_word
     @tries = 7
     @guess_word = '_' * sec_word.length
+    @already_guessed = []
   end
 
   def to_s
     %{
     tries left: #{tries}
     current guess: #{guess_word}
+    already guessed: #{already_guessed.join(' ')}
     man status: #{display_hangman(tries)}
       }
   end
@@ -134,7 +135,6 @@ class Hangman
   end
 
   def play
-    already_guessed = []
     while tries > 0
       guess = ask_guess
       if already_guessed.include?(guess)
@@ -150,19 +150,19 @@ class Hangman
         break
       elsif guess.upcase == '1'
         save_to_file(self)
-        puts 'Saved and resuming'
+        puts 'Saved !! and resuming'
       end
       self.tries -= 1 unless sec_word.include?(guess) || guess == '0' || guess == '1'
 
       puts display_hangman(tries)
       puts hints(guess, sec_word, guess_word)
 
-      return puts 'YOU WIN!!!!' if guess_word == sec_word
+      return puts 'YOU WIN !!' if guess_word == sec_word
     end
     if tries == 0
-      puts "YOU LOSE!!!! word was #{sec_word}"
+      puts "YOU LOSE !! word was: #{sec_word}"
     else
-      puts 'QUITTING'
+      puts 'Quit'
     end
   end
 
@@ -176,8 +176,8 @@ class Hangman
   end
 
   def self.load_from_file # had to make this a class method cause u cant load instance by calling load on another instance
-    puts Dir["saves/*"]
-    print 'Select which file to load: '
+    Dir["saves/*"].each.with_index(1) { |file, idx| puts "#{idx} #{file}" }
+    print 'To select the file to load enter only the filename: '
     input = gets.chomp
     if !File.exist?("saves/#{input}.yaml")
       puts 'No save found!!'
@@ -193,7 +193,7 @@ class Hangman
 end
 
 def new_game_or_load_save
-  print "Press only 'enter' for New Game, l to load a save file: "
+  print "Press only 'enter' for New Game, l to load a Save File: "
   input = gets.chomp.downcase
   if input == ''
     puts 'New Game Of Hangman !'
@@ -202,6 +202,9 @@ def new_game_or_load_save
     loaded_obj = Hangman.load_from_file
     puts loaded_obj
     loaded_obj.play
+  else
+    puts 'error try again...'
+    new_game_or_load_save
   end
   rerun
 end

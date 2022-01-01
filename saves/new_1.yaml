@@ -1,4 +1,0 @@
---- !ruby/object:Hangman
-sec_word: taximeter
-tries: 7
-guess_word: _a___e_e_

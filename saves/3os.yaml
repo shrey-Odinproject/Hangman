@@ -1,0 +1,13 @@
+--- !ruby/object:Hangman
+sec_word: schoolwork
+tries: 1
+guess_word: ___oo__o__
+already_guessed:
+- a
+- e
+- i
+- o
+- u
+- p
+- n
+- '0'

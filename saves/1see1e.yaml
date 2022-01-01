@@ -1,0 +1,12 @@
+--- !ruby/object:Hangman
+sec_word: kuchen
+tries: 3
+guess_word: __c_e_
+already_guessed:
+- a
+- s
+- e
+- c
+- x
+- o
+- '0'

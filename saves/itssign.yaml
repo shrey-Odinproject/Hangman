@@ -1,0 +1,15 @@
+--- !ruby/object:Hangman
+sec_word: sign
+tries: 1
+guess_word: sig_
+already_guessed:
+- a
+- e
+- i
+- d
+- p
+- s
+- c
+- k
+- g
+- '1'

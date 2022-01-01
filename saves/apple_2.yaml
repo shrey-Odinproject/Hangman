@@ -1,4 +1,0 @@
---- !ruby/object:Hangman
-sec_word: bedroll
-tries: 7
-guess_word: _edr___
